@@ -9,6 +9,7 @@ const sass = require('gulp-sass');
 const cleanCSS = require('gulp-clean-css');
 const imagemin = require('gulp-imagemin');
 const del = require('del');
+const gulpSequence = require('gulp-sequence')
 
 // concat scripts
 gulp.task("concatScripts", () => {
@@ -58,8 +59,10 @@ gulp.task('images', () => {
 });
 
 gulp.task('clean', () => {
-    del(['dist', 'css', 'scripts']);
+    return del(['dist', 'css', 'scripts']);
 });
+
+gulp.task('build', gulpSequence('clean',['styles','scripts','images']));
 
 
 
