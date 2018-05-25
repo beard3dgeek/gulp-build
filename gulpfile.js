@@ -6,6 +6,7 @@ const uglify = require('gulp-uglify');
 const maps = require('gulp-sourcemaps');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass');
+const imagemin = require('gulp-imagemin');
 
 // concat scripts
 gulp.task("concatScripts", () => {
@@ -39,6 +40,12 @@ gulp.task('scripts',['minifyScript'],() => {
 gulp.task('styles',['compileSass'],() => {
     return gulp.src(['css/global.css','css/global.css.map'])
     .pipe(gulp.dest('dist/styles'));
+});
+
+gulp.task('images', () => {
+    return gulp.src('images/*')
+        .pipe(imagemin())
+        .pipe(gulp.dest('dist/content'))
 });
 
 
