@@ -5,6 +5,7 @@ const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 const maps = require('gulp-sourcemaps');
 const rename = require('gulp-rename');
+const sass = require('gulp-sass');
 
 // concat scripts
 gulp.task("concatScripts", () => {
@@ -12,18 +13,18 @@ gulp.task("concatScripts", () => {
     .pipe(maps.init())
     .pipe(concat('all.js'))
     .pipe(maps.write('./'))
-    .pipe(gulp.dest('js'));
+    .pipe(gulp.dest('scripts'));
 });
 
 gulp.task('minifyScript', ['concatScripts'], () => {
-    return gulp.src('js/all.js')
+    return gulp.src('scripts/all.js')
     .pipe(uglify())
     .pipe(rename('all.min.js'))
-    .pipe(gulp.dest('js'));
+    .pipe(gulp.dest('scripts'));
 });
 
 gulp.task('compileSass', () => {
-    return gulp.src('scss/global.scss')
+    return gulp.src('sass/global.scss')
     .pipe(maps.init())
     .pipe(sass())
     .pipe(maps.write('./'))
@@ -31,7 +32,7 @@ gulp.task('compileSass', () => {
 });
 
 gulp.task('scripts',['minifyScript'],() => {
-    return gulp.src(['js/all.min.js','js/all.js.map'])
+    return gulp.src(['scripts/all.min.js','scripts/all.js.map'])
     .pipe(gulp.dest('dist/scripts'));
 });
 
