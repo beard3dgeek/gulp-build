@@ -10,6 +10,7 @@ const cleanCSS = require('gulp-clean-css');
 const imagemin = require('gulp-imagemin');
 const del = require('del');
 const gulpSequence = require('gulp-sequence')
+const browserSync = require('browser-sync').create();
 
 // concat scripts
 gulp.task("concatScripts", () => {
@@ -49,8 +50,10 @@ gulp.task('scripts',['minifyScript'],() => {
 
 gulp.task('styles',['minifyCss'],() => {
     return gulp.src(['css/global.min.css','css/global.css.map'])
-    .pipe(gulp.dest('dist/styles'));
+    .pipe(gulp.dest('dist/styles'))
+    .on("end", browserSync.reload);
 });
+
 
 gulp.task('images', () => {
     return gulp.src('images/*')
@@ -58,13 +61,28 @@ gulp.task('images', () => {
         .pipe(gulp.dest('dist/content'))
 });
 
+gulp.task('moveFiles', () => {
+    return gulp.src(['index.html','icons/*'],{ base: "./" })
+    .pipe(gulp.dest('dist'));
+})
+
 gulp.task('clean', () => {
     return del(['dist', 'css', 'scripts']);
 });
 
-gulp.task('build', gulpSequence('clean',['styles','scripts','images']));
+gulp.task('build', gulpSequence('clean',['styles','scripts','images'],'moveFiles'));
+
+gulp.task("default", ["build"], () => {
+    gulp.start('serve');
+});
 
 
+gulp.task('serve', function() {
 
+    browserSync.init({
+        server: "./"
+    });
 
-// minify to all.min.js -> moves file to dist/scripts
+    gulp.watch("sass/**", ['styles']);
+    gulp.watch("index.html").on('change', browserSync.reload);
+});
