@@ -1,2 +1,7 @@
 .DS_Store
 .sass-cache
+/node_modules
+/package-lock.json
+/dist
+/js/all*
+
