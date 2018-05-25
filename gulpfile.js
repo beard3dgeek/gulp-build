@@ -6,7 +6,9 @@ const uglify = require('gulp-uglify');
 const maps = require('gulp-sourcemaps');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass');
+const cleanCSS = require('gulp-clean-css');
 const imagemin = require('gulp-imagemin');
+const del = require('del');
 
 // concat scripts
 gulp.task("concatScripts", () => {
@@ -32,13 +34,20 @@ gulp.task('compileSass', () => {
     .pipe(gulp.dest('css'));
 });
 
+gulp.task('minifyCss', ['compileSass'], () => {
+    return gulp.src('css/global.css')
+    .pipe(cleanCSS())
+    .pipe(rename('global.min.css'))
+    .pipe(gulp.dest('css'));
+});
+
 gulp.task('scripts',['minifyScript'],() => {
     return gulp.src(['scripts/all.min.js','scripts/all.js.map'])
     .pipe(gulp.dest('dist/scripts'));
 });
 
-gulp.task('styles',['compileSass'],() => {
-    return gulp.src(['css/global.css','css/global.css.map'])
+gulp.task('styles',['minifyCss'],() => {
+    return gulp.src(['css/global.min.css','css/global.css.map'])
     .pipe(gulp.dest('dist/styles'));
 });
 
@@ -47,6 +56,12 @@ gulp.task('images', () => {
         .pipe(imagemin())
         .pipe(gulp.dest('dist/content'))
 });
+
+gulp.task('clean', () => {
+    del(['dist', 'css', 'scripts']);
+});
+
+
 
 
 // minify to all.min.js -> moves file to dist/scripts
